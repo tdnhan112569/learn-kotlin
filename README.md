@@ -39,7 +39,7 @@ fun main() {
 ``` 
 * Nếu như hàm _**return**_ về giá trị với kiểu **Unit** chúng ta có thể bỏ qua việc định nghĩa kiểu trả về thân hàm, mặc định kiểu dữ liệu trả về của hàm sẽ là **Unit**
 ```kotlin
-fun printSum(a : Int, b: Int) : { 
+fun printSum(a : Int, b: Int) { 
     println("Tổng của $a và $b là: ${a + b}")
 }
 
