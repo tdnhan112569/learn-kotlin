@@ -1,91 +1,41 @@
-# Học Kotlin
-## Những syntax mới trong Kotlin
+# Idioms
+## Những idiom trong Kotlin
 
-### 1. Khai báo hàm 
-> Hàm sẽ truyền vào 2 tham số kiểu **Int** và _return_ kiểu **Int**
-```kotlin
-fun sum(bienA : Int, bienB : Int) : Int {
-    return bienA + bienB
-}
-
-fun main() {
-    print("Tổng của 5 + 5 là: ")
-    println(sum(3, 5))
-}
-```
-
-> Nếu như trong thân hàm chỉ có 1 statement thì ta có thể viết ngắn gọn như sau
-```kotlin
-fun sum(a: Int, b: Int) = a + b
-
-fun main() {
-    /*
-      Ở đây có 1 cú pháp mới truy xuất được tới biến trong chuỗi 
-      thông qua qua syntax ${ten_bien hoặc ten_ham}
-    */
-    println("Tổng của 19 vs 23 là: ${sum(19, 23)}")
+### 1. Tạo CTO ( POJOs / POCOs )
+* **POJOs** là Plain Old Java Object nghĩa là nó là 1 kiểu pure data stucture. Nó chỉ có các thuộc tính và các phương thức getter, setter và các phương thức mặc định và có thể overide một số phương thức mặc định của object ( equal(), hashCode(), toString()...) hoặc 1 số interface khác như là Serializable, nhưng nó không chứa bất kỳ các method khác ngoài các phương thức mặc định
+> Cách tạo với Java
+```java
+class Point {
+    private double x;
+    private double y;
+	public double getX() { return x; }
+    public double getY() { return y; }
+    public void setX(double v) { x = v; }
+    public void setY(double v) { y = v; }
+    public boolean equals(Object other) {...}
 }
 ```
 
-> Hàm _**return**_ về giá trị không có ý nghĩa ( _Data type:_ **Unit** )
-```kotlin
-fun printSum(a: Int, b: Int): Unit {
-    println("Tổng của $a và $b là: ${a + b}")
-}
+> Cách tạo siêu ngắn gọn với Kotlin
 
-fun main() {
-    printSum(-5, 15)
-}
-``` 
-* Nếu như hàm _**return**_ về giá trị với kiểu **Unit** chúng ta có thể bỏ qua việc định nghĩa kiểu trả về thân hàm, mặc định kiểu dữ liệu trả về của hàm sẽ là **Unit**
 ```kotlin
-fun printSum(a : Int, b: Int) { 
-    println("Tổng của $a và $b là: ${a + b}")
-}
-
-fun main() {
-    printSum(-5, 15)
-}
+data class Customer(val name: String, val email: String)
 ```
 
-
-### 2. Khai báo biến
-> Để định nghĩa 1 _hàng số_ ta sử dụng keyword **val** _(val => value)_
+### 2. Gán giá trị mặc định cho tham số của hàm
 ```kotlin
-fun main() {
-
-// Cách 1: Gán kiểu và giá trị trực tiếp
-    val a: Int = 1 
-
-/* 
-   Cách 2: Gán giá trị và kiểu sẽ được compiler tự hiểu dựa vào giá trị của biến
-*/
-    val b = 2       
-
- // Cách 3: Khai báo trước và gán giá trị sau
-    val c: Int     
-    c = 3      
-    println("a = $a, b = $b, c = $c")
-}
+fun foo(a: Int = 0, b: String = "") { ... }
 ```
 
-> Để định nghĩa 1 biến có thể gán lại giá trị của biến đó thì sử dụng keyword **var** _(var => variable)_
+### 3. Filter trong collection 
 ```kotlin
-fun main() {
-    var x = 5 
-    x += 1
-    println("x = $x")
-}
-```
+// Cách 1
 
+val positives = list.filter { x -> x > 0 }
 
-### 3. Comments 
-```kotlin
-// Comment trên 1 dòng
+// Cách 2: ngắn hơn
 
-/* 
-  Comment trên nhiều dòng
- */
+val positives = list.filter { it > 0 }
 ```
 
 
@@ -98,242 +48,103 @@ fun main() {
     var a = 1
     // simple name in template:
     val s1 = "a is $a" 
-	println("${s1}")
+	println("${s1}") // output: a is 1
     a = 2
     // arbitrary expression in template:
     val s2 = "${s1.replace("is", "was")}, but now is $a"
-    println(s2)
+    println(s2) // output: a was 1, but now is 2
 }
 ```
 
 
-### 5. Sử dụng những giá trị _nullable_ và checking **null**
-> Hàm parseInt sẽ _return **null**_ nếu giá trị **String** input không thể parse sang kiểu **Int**
+### 5. Kiểm tra kiểu instance 
 ```kotlin
-fun parseInt(str: String): Int? {
-    // ...
+when (x) {
+    is Foo -> ...
+    is Bar -> ...
+    else   -> ...
 }
 ```
-> Ví dụ về việc check null 
+
+### 6. Duyệt một cái map/list 
 ```kotlin
-fun printProduct(arg1: String, arg2: String) {
-    val x = parseInt(arg1)
-    val y = parseInt(arg2)
-
-    // Sử dụng `x * y` có thể gây lỗi bởi vì chúng có thể đang bị null.
-    if (x != null && y != null) {
-        // x và y sẽ tự động được cast về thành kiểu non-nullable sau khi 
-        //check null
-        println(x * y)
-    }
-    else {
-        println("either '$arg1' or '$arg2' is not a number")
-    }    
+for ((k, v) in map) {
+    println("$k -> $v")
 }
 
-// Hoặc
-
-// ...
-if (x == null) {
-    println("Wrong number format in arg1: '$arg1'")
-    return
-}
-if (y == null) {
-    println("Wrong number format in arg2: '$arg2'")
-    return
-}
-
-// x và y sẽ tự động được cast về thành kiểu non-nullable sau khi 
-//check null
-println(x * y)
+// k, v có thể là 
 ```
 
-### 6. Sử dụng toán tử check Data type và auto cast type
-> Toán tử **is** để check 
-> * Nếu là 1 expression hoặc là property của kiểu dữ liệu cụ thể nào đó thì nó sẽ hiểu là 1 instance của 1 kiểu đó và nếu thỏa thì auto cast về kiểu đó
+### 6. Range
 ```kotlin
-fun getStringLength(obj: Any): Int? {
-    if (obj is String) {
-    // `obj` tự động cast về kiểu `String` nếu nó là 1 instance của `String`
-        return obj.length
-    }
-
-    // `obj` này vẫn là kiểu `Any`
-    return null
-}
-
-
-fun main() {
-    fun printLength(obj: Any) {
-        println("'$obj' string length is ${getStringLength(obj) ?: "... err, not a string"} ")
-    }
-    printLength("Incomprehensibilities")
-    printLength(1000)
-    printLength(listOf(Any()))
-}
-
-fun getStringLength(obj: Any): Int? {
-    if (obj !is String) return null
-
-    // `obj` is automatically cast to `String` in this branch
-    return obj.length
-}
-
-// output
-
-/*
-    'Incomprehensibilities' string length is 21 
-    '1000' string length is ... err, not a string 
-    '[java.lang.Object@3af49f1c]' string length is ... err, not a string 
-*/
+for (i in 1..100) { ... }  // closed range: [1:100] includes 100 
+for (i in 1 until 100) { ... } // range:  [1:100) does not include 100
+for (x in 2..10 step 2) { ... } 
+for (x in 10 downTo 1) { ... }
+if (x in 1..10) { ... }
 ```
 
-### 7. Loop 
+### 7. Read only List, Map
+
+* List
+
 ```kotlin
-fun main() {
-    val items = listOf("apple", "banana", "kiwifruit")
-    for (item in items) {
-        println(item)
-    }
-}
-
-/*
- - Output
-        apple
-        banana
-        kiwifruit
-*/
+val list = listOf("a", "b", "c")
 ```
-Hoặc là
+
+* Map
+
 ```kotlin
-fun main() {
-    val items = listOf("apple", "banana", "kiwifruit")
-    for (index in items.indices) {
-        println("item at $index is ${items[index]}")
-    }
-}
-
-/*
- - Output
-        item at 0 is apple
-        item at 1 is banana
-        item at 2 is kiwifruit
-*/
+val map = mapOf("a" to 1, "b" to 2, "c" to 3)
 ```
 
-### 8. Sử dụng While
+### 8. Lazy 
 ```kotlin
-val items = listOf("apple", "banana", "kiwifruit")
-var index = 0
-while (index < items.size) {
-    println("item at $index is ${items[index]}")
-    index++
+val p: String by lazy {
+    // compute the string
 }
-
-/*
-    item at 0 is apple
-    item at 1 is banana
-    item at 2 is kiwifruit
-*/
 ```
 
-### 9. Sử dụng biểu When
+### 9. Function mở rộng
 * When là thứ được cải tiến rất hay so với switch case phiên bản cũ
 ```kotlin
-fun describe(obj: Any): String =
-    when (obj) {
-        1          -> "One"
-        "Hello"    -> "Greeting"
-        is Long    -> "Long"
-        !is String -> "Not a string"
-        else       -> "Unknown"
-    }
+fun String.spaceToCamelCase() { ... }
 
-fun main() {
-    println(describe(1))
-    println(describe("Hello"))
-    println(describe(1000L))
-    println(describe(2))
-    println(describe("other"))
-}
-/*
-    Output
-        One
-        Greeting
-        Long
-        Not a string
-        Unknown
-*/
+"Convert this to camelcase".spaceToCamelCase()
 ```
 
-### 10. Sử dụng Ranges
-> Sử dụng range trong vòng lặp sử dụng toán tử **in**
+### 10. Tạo 1 Singleton
 ```kotlin
-fun main() {
-    val x = 10
-    val y = 9
-    if (x in 1..y+1) {
-        println("fits in range")
-    }
+object Resource {
+    val name = "Name"
 }
-
 //output: fits in range
 ```
 
+### 11. Cách check not null ngắn gọn
 
-> Kiểm soát over index size
+> Thay vì phải if(files != null) thì
 ```kotlin
-fun main() {
-    val list = listOf("a", "b", "c")
+val files = File("Test").listFiles()
 
-    if (-1 !in 0..list.lastIndex) {
-        println("-1 is out of range")
-    }
-    if (list.size !in list.indices) {
-        println("list size is out of valid list indices range, too")
-    }
-}
-
-/*
-    -1 is out of range
-    list size is out of valid list indices range, too
-*/
+println(files?.size)
 ```
 
-> Lập trong khoảng
+### 12. Cách check not null và else ngắn gọn
 ```kotlin
-fun main() {
-    for (x in 1..5) {
-        print(x)
-    }
-}
-// output: 12345
+val files = File("Test").listFiles()
+
+println(files?.size ?: "empty")
 ```
 
-> Lặp kết hợp với **step**
-* x **in** 1..10: nghĩa là x chạy trong range từ [1:10]
-* x **in** 9 **downTo** 0: nghĩa là chạy giảm dần trong range [9:0]
-* **step** là bước nhảy
 
+### 13. Thực thi câu lệnh if null
 ```kotlin
-fun main() {
-    for (x in 1..10 step 2) {
-        print(x)
-    }
-    println()
-    for (x in 9 downTo 0 step 3) {
-        print(x)
-    }
- 
-/*
-  // output
-        13579
-        9630
-*/ 
-}
+val values = ...
+val email = values["email"] ?: throw IllegalStateException("Email is missing!")
 ```
 
-### 11. Collection
+### 14. Lấy item đầu tiên nếu   
 
 > Lặp với Collection
 ```kotlin
