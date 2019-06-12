@@ -1,6 +1,5 @@
-# Idioms
+# [Idioms](https://kotlinlang.org/docs/reference/idioms.html)
 ## Những idiom trong Kotlin
-
 ### 1. Tạo CTO ( POJOs / POCOs )
 * **POJOs** là Plain Old Java Object nghĩa là nó là 1 kiểu pure data stucture. Nó chỉ có các thuộc tính và các phương thức getter, setter và các phương thức mặc định và có thể overide một số phương thức mặc định của object ( equal(), hashCode(), toString()...) hoặc 1 số interface khác như là Serializable, nhưng nó không chứa bất kỳ các method khác ngoài các phương thức mặc định
 > Cách tạo với Java
