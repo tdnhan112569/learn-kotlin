@@ -120,5 +120,5 @@ do {
 ```
 
 ### 5. Break và Continue
-> Kotlin vẫn giữ cách truyền thống như các ngôn ngữ đó
+> Kotlin vẫn giữ cách truyền thống như các ngôn ngữ truyền thống như Java, C, C++
 
