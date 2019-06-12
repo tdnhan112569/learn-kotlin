@@ -208,7 +208,7 @@ fun theAnswer(): Int {
 }
 ```
 
-### 21. Có thể kết hợp với 1 số idioms, ví dụ như When-expression
+> Có thể kết hợp với 1 số idioms, ví dụ như When-expression
 ```kotlin
 fun transform(color: String): Int = when (color) {
     "Red" -> 0
@@ -218,7 +218,7 @@ fun transform(color: String): Int = when (color) {
 }
 ```
 
-### 22. Gọi nhiều hàm object với cú pháp tuyệt cú mèo
+### 21. Gọi nhiều hàm object với cú pháp tuyệt cú mèo
 ```kotlin
 class Turtle {
     fun penDown()
@@ -238,7 +238,7 @@ with(myTurtle) { //draw a 100 pix square
 }
 ```
 
-### 23. Thao tác với file 
+### 22. Thao tác với file 
 ```kotlin
 val stream = Files.newInputStream(Paths.get("/some/file.txt"))
 stream.buffered().reader().use { reader ->
@@ -246,7 +246,7 @@ stream.buffered().reader().use { reader ->
 }
 ```
 
-### 24. Convert json
+### 23. Convert json
 ```kotlin
 /*
 public final class Gson {
@@ -258,7 +258,7 @@ public <T> T fromJson(JsonElement json, Class<T> classOfT) throws JsonSyntaxExce
 inline fun <reified T: Any> Gson.fromJson(json: JsonElement): T = this.fromJson(json, T::class.java)
 ```
 
-### 25. Tạo 1 biến boolean nullable
+### 24. Tạo 1 biến boolean nullable
 ```kotlin
 val b: Boolean? = ...
 if (b == true) {
@@ -268,7 +268,7 @@ if (b == true) {
 }
 ```
 
-### 26. Swap với siêu clean code
+### 25. Swap với siêu clean code
 ```kotlin
 var a = 1
 var b = 2
