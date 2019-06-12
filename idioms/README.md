@@ -118,7 +118,6 @@ fun String.spaceToCamelCase() { ... }
 object Resource {
     val name = "Name"
 }
-//output: fits in range
 ```
 
 ### 11. Cách check not null ngắn gọn
@@ -144,93 +143,135 @@ val values = ...
 val email = values["email"] ?: throw IllegalStateException("Email is missing!")
 ```
 
-### 14. Lấy item đầu tiên nếu   
-
-> Lặp với Collection
+### 14. Lấy item đầu tiên nếu không có trả về null
 ```kotlin
-fun main() {
-    val items = listOf("apple", "banana", "kiwifruit")
-    for (item in items) {
-        println(item)
+val emails = ... // might be empty
+val mainEmail = emails.firstOrNull() ?: ""
+```
+
+### 15. Thực thi nếu not null
+```kotlin
+val value = ...
+
+value?.let {
+    ... // execute this block if not null
+}
+```
+
+### 16. Map nullable value if not null
+```kotlin
+val value = ...
+
+val mapped = value?.let { transformValue(it) } ?: defaultValueIfValueIsNull
+```
+
+### 17. Return với câu lệnh When
+```kotlin
+fun transform(color: String): Int {
+    return when (color) {
+        "Red" -> 0
+        "Green" -> 1
+        "Blue" -> 2
+        else -> throw IllegalArgumentException("Invalid color param value")
     }
 }
+```
+
+### 18. Gán nhanh giá trị cùng câu lệnh if
+```kotlin
+fun foo(param: Int) {
+    val result = if (param == 1) {
+        "one"
+    } else if (param == 2) {
+        "two"
+    } else {
+        "three"
+    }
+}
+```
+
+### 19. Builder-style usage of methods that return Unit
+```kotlin
+fun arrayOfMinusOnes(size: Int): IntArray {
+    return IntArray(size).apply { fill(-1) }
+}
+```
+
+### 20. Hàm single-expression
+```kotlin
+fun theAnswer() = 42
+```
+> Nó sẽ tương đương với
+```kotlin
+fun theAnswer(): Int {
+    return 42
+}
+```
+
+### 21. Có thể kết hợp với 1 số idioms, ví dụ như When-expression
+```kotlin
+fun transform(color: String): Int = when (color) {
+    "Red" -> 0
+    "Green" -> 1
+    "Blue" -> 2
+    else -> throw IllegalArgumentException("Invalid color param value")
+}
+```
+
+### 22. Gọi nhiều hàm object với cú pháp tuyệt cú mèo
+```kotlin
+class Turtle {
+    fun penDown()
+    fun penUp()
+    fun turn(degrees: Double)
+    fun forward(pixels: Double)
+}
+
+val myTurtle = Turtle()
+with(myTurtle) { //draw a 100 pix square
+    penDown()
+    for(i in 1..4) {
+        forward(100.0)
+        turn(90.0)
+    }
+    penUp()
+}
+```
+
+### 23. Thao tác với file 
+```kotlin
+val stream = Files.newInputStream(Paths.get("/some/file.txt"))
+stream.buffered().reader().use { reader ->
+    println(reader.readText())
+}
+```
+
+### 24. Convert json
+```kotlin
 /*
-  //output:
-        apple
-        banana
-        kiwifruit
+public final class Gson {
+     ...
+public <T> T fromJson(JsonElement json, Class<T> classOfT) throws JsonSyntaxException {
+     ...
 */
+
+inline fun <reified T: Any> Gson.fromJson(json: JsonElement): T = this.fromJson(json, T::class.java)
 ```
 
-> Check collection chứa trong 1 object sử dụng toán tử **in**
+### 25. Tạo 1 biến boolean nullable
 ```kotlin
-fun main() {
-    val items = setOf("apple", "banana", "kiwifruit")
-    when {
-        "orange" in items -> println("juicy")
-        "apple" in items -> println("apple is fine too")
-    }
+val b: Boolean? = ...
+if (b == true) {
+    ...
+} else {
+    // `b` is false or null
 }
-
-// output: banana
 ```
 
-> Loop, filter, map, sort với collection
+### 26. Swap với siêu clean code
 ```kotlin
-fun main() {
-  val fruits = listOf("banana", "avocado", "apple", "kiwifruit")
-  fruits
-    .filter { it.startsWith("a") }
-    .sortedBy { it }
-    .map { it.toUpperCase() }
-    .forEach { println(it) }
-}
-// output: APPLE 
-//         AVOCADO
+var a = 1
+var b = 2
+a = b.also { b = a }
 ```
-
-### 12. Khai báo class và khởi tạo instance của class đó
-```kotlin
-
-abstract class Shape (val sides : List<Double>) {
-    abstract fun calculateArea(): Double
-    val perimeter : Double get() = sides.sum()
-}
-
-interface RetangleProperties {
-    val isSquare : Boolean
-}
-
-class Retangle (
-   var height : Double,
-   var width  : Double 
-) : Shape (listOf(height, width, height, width)), RetangleProperties {
-    overide fun calculateArea () : Double = height * width
-    overide val isSquare : Boolean get() = height == width
-}
-
-class Triangle (
-   var sideA : Double,
-   var sideB : Double,
-   var sideC : Double
-) : Shape (listOf(sideA, sideB, sideC)) {
-    overide fun calculateArea() : Double {
-        var s = perimeter / 2
-        return Math.sqrt( s * (s - sideA) * s * (s - sideB) * s * (s - sideC))
-    }
-}
-
-fun main() {
-    // Không cần phải dùng từ khóa new 
-    val retangle = Retangle( 5.0, 2.0 ) // Khởi tạo 1 intance
-    println("Area : ${retangle.calculateArea()}") // 10.0
-    println("perimeter : ${retangle.perimeter}")  // 14.0
-
-    val triangle = Triangle( 3.0, 4.0, 5.0 )
-    println("Area : ${retangle.calculateArea()}") // 6.0
-    println("perimeter : ${retangle.perimeter}")  // 12.0
-}
-```
-
-
 
